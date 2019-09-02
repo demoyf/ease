@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>css3实现波浪动画</title>
+<meta charset="utf-8"/>
+<style>
+body{background:#ffe894;}
+.loading_bg{width:113px; height:111px;background:url(loading_bg.png) no-repeat left top;margin:30px auto;}
+.loading{width:113px; height:111px;position:relative; -webkit-mask-image:url(loading.png);}
+.show{
+	width:120px; height:187px; position:absolute; left:0; top:40px;
+	animation:sploosh 3s ease-in-out both infinite; 
+	-webkit-animation:sploosh 3s ease-in-out both infinite;
+	background-image: url(bolang.png);
+}
+.show_01{-webkit-animation-delay: -0.8s;  animation-delay: -0.8s; opacity:0.2;}
+.show_02{-webkit-animation-delay: -1.6s;  animation-delay: -1.6s; opacity:0.4;}
+.show_03{-webkit-animation-delay: -2.4s;  animation-delay: -2.4s; opacity:0.6;}
+.show_04{-webkit-animation-delay: -3.2s;  animation-delay: -3.2s; opacity:0.8;}
+
+@-webkit-keyframes sploosh{
+  0% {background-position: 0 bottom;}
+  100% {background-position: 200px bottom;}
+}
+@keyframes sploosh{
+  0% {background-position: 0 bottom;}
+  100% {background-position: 200px bottom;}
+}
+</style>
+</head>
+
+<body>
+<div class="loading_bg">
+    <div class="loading">
+        <div class="show_01 show"></div>
+        <div class="show_02 show"></div>
+        <div class="show_03 show"></div>
+        <div class="show_04 show"></div>
+    </div>
+</div>
+</body>
+</html>
