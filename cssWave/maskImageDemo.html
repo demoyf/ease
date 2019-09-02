@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>css实现波浪动画</title>
+    <title>mask image demo</title>
     <meta charset="utf-8" />
     <style>
     body {
@@ -12,18 +12,30 @@
     .loading_bg {
         width: 113px;
         height: 111px;
+        background: url(img/loading_bg.png) no-repeat left top;
         margin: 30px auto;
-        position: relative;
-        overflow: hidden;
-        border-radius: 50%;
     }
 
+    .loading {
+        width: 113px;
+        height: 111px;
+        position: relative;
+        -webkit-mask-image: url(img/loading.png);
+    }
+    
+    .animation-dom {
+        width: 120px;
+        height: 187px;
+         position: absolute;
+         left: 0px;top: 0px;
+         animation: bottom-to-top 4s ease-in-out both infinite;
+    }
     .show {
         width: 120px;
         height: 187px;
         position: absolute;
         left: 0;
-        top: 40px;
+        top: 100px;
         animation: wave 3s ease-in-out both infinite;
         -webkit-animation: wave 3s ease-in-out both infinite;
         background-image: url(img/bolang.png);
@@ -53,16 +65,6 @@
         opacity: 0.8;
     }
 
-    @-webkit-keyframes wave {
-        0% {
-            background-position: 0 bottom;
-        }
-
-        100% {
-            background-position: 200px bottom;
-        }
-    }
-
     @keyframes wave {
         0% {
             background-position: 0 bottom;
@@ -72,15 +74,28 @@
             background-position: 200px bottom;
         }
     }
+
+    @keyframes bottom-to-top {
+        0%{
+            transform: translateY(0%);
+        }
+        100% {
+            transform: translateY(-110px);
+        }
+    }
     </style>
 </head>
 
 <body>
     <div class="loading_bg">
-       <div class="show-01 show"></div>
-        <div class="show-02 show"></div>
-        <div class="show-03 show"></div>
-        <div class="show-04 show"></div>
+        <div class="loading">
+            <div class="animation-dom">            
+                <div class="show-01 show"></div>
+                <div class="show-02 show"></div>
+                <div class="show-03 show"></div>
+                <div class="show-04 show"></div>
+            </div>
+        </div>
     </div>
 </body>
 
