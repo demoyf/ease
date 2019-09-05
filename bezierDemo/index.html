@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>贝塞尔曲线绘制</title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+	   	const base = 1000;
+	   	const points = 60;
+	    const canvas = document.querySelector("#canvas");
+	    let { width, height } = window.screen;
+	    height -= 200;
+	    width -= 200;
+	    canvas.width = width;
+	    canvas.height = height;
+	    const context = canvas.getContext('2d');
+	    context.lineWidth="5";
+		context.strokeStyle="#01a6f6ad";
+		context.lineCap="round"
+	    // function getFactor(n) {
+	    //     if (n == 0) {
+	    //         return 1;
+	    //     } else {
+	    //         return n * getFactor(n - 1);
+	    //     }
+	    // }
+	    function getFactor(n, total) {
+		  if (n === 0) return total;
+		  return getFactor(n - 1, n * total);
+		}
+	    function getRation(n, i) {
+	        let a = getFactor(n,1);
+	        let b = getFactor(i,1) * getFactor(n - i,1);
+	        return a / b;
+	    }
+        const tPath = [];
+        let t = 0;
+        let t1 = 1 - t;
+        let step = 1 / base;
+        let anchorPoint = [
+        ];
+        for(let i = 0;i<points;i++){
+        	anchorPoint.push({
+        		x: ~~ (Math.random() * width),
+        		y: ~~ (Math.random() * height),
+        	})
+        }
+        let n = anchorPoint.length - 1;
+	    function getPath() {
+	        for (let i = 0; i <= base; i++) {
+	            t1 = 1 - t;
+	            let x = y = 0;
+	            for (let j = 0; j <= n; j++) {
+	                let ration = getRation(n, j);
+	                x = x + ration * anchorPoint[j].x * Math.pow(t, j) * Math.pow(t1, n - j);
+	                y = y + ration * anchorPoint[j].y * Math.pow(t, j) * Math.pow(t1, n - j);
+	            }
+	            tPath.push({
+	                x: x,
+	                y: y
+	            });
+	            t = t + step;
+	            if (t > 1) {
+	            	t = 1;
+	            }
+	        }
+	    }
+	    getPath();
+	    context.beginPath();
+	    for (let i = 0; i < tPath.length ; i++) {
+	    	let item = tPath[i];
+	    	if (i == 0) {
+	    		context.moveTo(item.x,item.y);
+	    	} else {
+	    		context.lineTo(item.x,item.y);
+	    	}
+	    }
+	    context.stroke();
+	    context.closePath();
+    </script>
+</body>
+
+</html>
