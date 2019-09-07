@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .animate-item{
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            left: 200px;
+        }
+
+        .js-animate{
+            top: 50px;
+        }
+
+        .css-animate{
+            top: 300px;
+        }
+
+        .ease-in-ele{
+            animation: move 1s ease-in;
+        }
+
+        .ease-out-ele{
+            animation: move 1s ease-out;
+        }
+
+        .ease-in-out-ele{
+            animation: move 1s ease-in-out;
+        }
+
+        @keyframes move {
+            0%{
+                transform: translateX(0);
+            }
+            100%{
+                transform: translateX(200px);
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="js-animate animate-item"></div>
+<div class="css-animate animate-item"></div>
+<script>
+const cssEle = document.querySelector(".css-animate");
+const jsEle = document.querySelector(".js-animate");
+
+</script>
+</body>
+</html>
