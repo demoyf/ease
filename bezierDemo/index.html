@@ -10,7 +10,7 @@
     <canvas id="canvas"></canvas>
     <script>
 	   	const base = 1000;
-	   	const points = 60;
+	   	const points = 81;
 	    const canvas = document.querySelector("#canvas");
 	    let { width, height } = window.screen;
 	    height -= 200;
@@ -71,8 +71,11 @@
 	    }
 	    getPath();
 	    context.beginPath();
+	    let index = 0;
+    	let item = tPath[index];
+    	context.moveTo(item.x,item.y);
 	    for (let i = 0; i < tPath.length ; i++) {
-	    	let item = tPath[i];
+			let item = tPath[i];
 	    	if (i == 0) {
 	    		context.moveTo(item.x,item.y);
 	    	} else {
@@ -81,6 +84,19 @@
 	    }
 	    context.stroke();
 	    context.closePath();
+	    
+/*	   	function draw() {
+	   		index ++;
+	   		if (index < tPath.length) {
+	   			item = tPath[index];
+	   			context.lineTo(item.x,item.y);
+	   			context.stroke();
+	   			return requestAnimationFrame(draw);
+	   		} else {
+	   			context.closePath();
+	   		}
+	   	}
+	   	draw();*/
     </script>
 </body>
 

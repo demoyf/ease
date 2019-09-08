@@ -1,54 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        .animate-item{
-            width: 200px;
-            height: 200px;
-            position: absolute;
-            left: 200px;
+    @keyframes move {
+        0% {
+            transform: translateX(0) rotateZ(0deg);
         }
 
-        .js-animate{
-            top: 50px;
+        100% {
+            transform: translateX(400px) rotateZ(90deg);
+        }
+    }
+    @keyframes move1 {
+        0% {
+            transform: translateX(0) rotateZ(0deg);
         }
 
-        .css-animate{
-            top: 300px;
+        100% {
+            transform: translateX(400px) rotateZ(90deg);
+        }
+    }
+    @keyframes move2 {
+        0% {
+            transform: translateX(0) rotateZ(0deg);
         }
 
-        .ease-in-ele{
-            animation: move 1s ease-in;
+        100% {
+            transform: translateX(400px) rotateZ(90deg);
         }
+    }
+    
+    .animate-item {
+        width: 200px;
+        height: 200px;
+        position: absolute;
+        left: 200px;
+    }
 
-        .ease-out-ele{
-            animation: move 1s ease-out;
-        }
+    .js-animate {
+        top: 50px;
+        background-color: #3164ff;
+    }
 
-        .ease-in-out-ele{
-            animation: move 1s ease-in-out;
-        }
+    .css-animate {
+        top: 300px;
+        background-color: #ff7733;
+    }
 
-        @keyframes move {
-            0%{
-                transform: translateX(0);
-            }
-            100%{
-                transform: translateX(200px);
-            }
-        }
+    .ease-in-ele {
+        animation: move 1s ease-in forwards;
+    }
+
+    .ease-out-ele {
+        animation: move1 1s ease-out forwards;
+    }
+
+    .ease-in-out-ele {
+        animation: move2 1s ease-in-out forwards;
+    }
 
     </style>
 </head>
-<body>
-<div class="js-animate animate-item"></div>
-<div class="css-animate animate-item"></div>
-<script>
-const cssEle = document.querySelector(".css-animate");
-const jsEle = document.querySelector(".js-animate");
 
-</script>
+<body>
+    <div class="controller">
+        <select name="type-select" id="type-select">
+            <option value="easeInQuad">easeInQuad</option>
+            <option value="easeOutQuad">easeOutQuad</option>
+            <option value="easeInOutQuad">easeInOutQuad</option>
+        </select>
+        <button id="start">播放动画</button>
+    </div>
+    <div class="js-animate animate-item"></div>
+    <div class="css-animate animate-item"></div>
+    <script>
+    var cssEle = document.querySelector(".css-animate"),
+    jsEle = document.querySelector(".js-animate"),
+    startEle = document.querySelector("#start"),
+    select = document.querySelector("#type-select");
+    var duration = 1000,
+    currentTime = 0,
+    startValue = 0,
+    translateValue = 400,
+    rotateValue = 90,
+    startTime = 0,
+    isEnd = false,
+    animateFunc = null;
+    var animateObj = {
+        easeInQuad(currentTime, startValue, changeValue, duration) {
+            currentTime /= duration;
+            return changeValue * currentTime * currentTime + startValue;
+        },
+        easeOutQuad(currentTime, startValue, changeValue, duration) {
+            currentTime /= duration;
+            return -changeValue * currentTime * (currentTime - 2) + startValue;
+        },
+        easeInOutQuad(currentTime, startValue, changeValue, duration) {
+            if (currentTime / duration <= 0.5) {
+                return this.easeInQuad(currentTime, startValue, changeValue / 2, duration / 2)
+            } else {
+                currentTime -= duration / 2;
+                startValue = changeValue / 2;
+                return this.easeOutQuad(currentTime, startValue, changeValue / 2, duration / 2)
+            }
+        }
+    }
+
+    var changeClassObj = {
+        easeInQuad(currentTime, startValue, changeValue, duration) {
+            cssEle.classList.remove('ease-out-ele');
+            cssEle.classList.remove('ease-in-out-ele');
+            cssEle.classList.add('ease-in-ele');
+        },
+        easeOutQuad(currentTime, startValue, changeValue, duration) {
+            cssEle.classList.remove('ease-in-ele');
+            cssEle.classList.remove('ease-in-out-ele');
+            cssEle.classList.add('ease-out-ele');
+        },
+        easeInOutQuad(currentTime, startValue, changeValue, duration) {
+            cssEle.classList.remove('ease-in-ele');
+            cssEle.classList.remove('ease-out-ele');
+            cssEle.classList.add('ease-in-out-ele');
+        }
+    }
+
+    function startAnimation(value = 'easeInQuad'){
+        currentTime = 0,
+        startValue = 0,
+        animateFunc = animateObj[value];
+        animateFunc = animateFunc.bind(animateObj);
+        changeClassObj[value] && changeClassObj[value]();
+        startTime = ~~new Date();
+        isEnd = false;
+        animate();
+    }
+
+    function animate(){
+        var currentTime = (~~new Date()) - startTime;
+        if (isEnd) {
+            return;
+        }
+        if (currentTime >= duration) {
+            currentTime = duration;
+            isEnd = true;
+        }
+        var currentTranslateValue = animateFunc(currentTime,startValue,translateValue,duration);
+        var CurrentRotateValue = animateFunc(currentTime,startValue,rotateValue,duration);
+        jsEle.style.transform = `translateX(${currentTranslateValue}px) rotateZ(${CurrentRotateValue}deg)`;
+        requestAnimationFrame(animate);
+    }
+
+    startEle.addEventListener("click",()=>{
+        startAnimation(select.value);
+    });
+
+    </script>
 </body>
+
 </html>
