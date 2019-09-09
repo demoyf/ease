@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>抛物线</title>
+    <style>
+    canvas {
+        border: #aaa solid 1px;
+    }
+    </style>
+</head>
+
+<body>
+    <canvas id='canvas' width="500" height="500"></canvas>
+    <button onclick="send()">发射</button>
+    <script>
+    class ObjPool {
+        constructor() {
+            this.pool = [];
+        }
+        add(obj) {
+            if (this.pool.length < 300) {
+                this.pool.push(obj);
+            }
+            else {
+            	obj = null;
+            }
+        }
+        get() {
+            return null;
+            if (this.pool.length > 0) {
+                return this.pool.pop();
+            }
+        }
+    }
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    const SH = 0.8;
+
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function getRandomColor() {
+        return '#' +
+            (function(color) {
+                return (color += '0123456789abcdef' [Math.floor(Math.random() * 16)]) &&
+                    (color.length == 6) ? color : arguments.callee(color);
+            })('');
+    }
+
+    function Ball() {}
+    Ball.prototype = {
+        init: function() {
+            this.x = 0;
+            this.y = 0;
+            this.r = 10;
+            this.color = getRandomColor();
+            this.vx = random(5, 9);
+            this.vy = 0;
+            this.v = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+            this.g = random(0.3, 0.5);
+            this.t = 0;
+        },
+        draw: function() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            this.updata();
+        },
+        updata: function() {
+            this.t++;
+            this.x += this.vx;
+            if ((this.x > canvas.width) && this.vx > 0 || (this.x < 0) && this.vx < 0) {
+                this.vx = -this.vx * SH;
+            }
+            this.y += this.vy;
+            this.vy += this.g;
+            if ((this.y > canvas.height) && this.vy > 0 || (this.y < 0) && this.vy < 0) {
+                this.vy = -this.vy * SH;
+            }
+        }
+    }
+
+    var objPool = new ObjPool();
+    for (var i = 0; i < 100; i++) {
+        var ball = new Ball();
+        ball.init();
+        objPool.add(ball);
+    }
+    var aimnid;
+    var Olist = [];
+
+    function aimn() {
+        ctx.clearRect(0, 0, 500, 500);
+        if (Olist.length) {
+            for (let i = 0; i < Olist.length; i++) {
+                Olist[i].draw();
+                Olist[i].v = Math.sqrt(Olist[i].vx * Olist[i].vx + Olist[i].vy * Olist[i].vy);
+                if (Olist[i].v < 3) {
+                    objPool.add(Olist.splice(i, 1)[0]);
+                    i--;
+                }
+            }
+            aimnid = requestAnimationFrame(aimn);
+        } else {
+            ctx.clearRect(0, 0, 500, 500);
+        }
+    }
+    const MAX = 100;
+    var ymp = 0;
+
+    function send() {
+        for (var i = 0; i < 10; i++) {
+            var ball = objPool.get();
+            if (!ball) {
+                ball = new Ball();
+            }
+            ball.init();
+            Olist.push(ball);
+        }
+        cancelAnimationFrame(aimnid);
+        aimn();
+    }
+    </script>
+</body>
+
+</html>
